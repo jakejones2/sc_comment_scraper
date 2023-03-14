@@ -15,4 +15,10 @@ to do:
     create readme and liscence
     upload to pypi?
 
-has this worked?
+create virtual environment
+https://code.visualstudio.com/docs/python/environments
+
+tests
+https://stackoverflow.com/questions/23984973/how-to-run-tests-without-installing-package
+
+halfway through using pathlib to sort out filenames (check dir), also adding unit tests
