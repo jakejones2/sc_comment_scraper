@@ -14,3 +14,5 @@ to do:
     learn about dependencies
     create readme and liscence
     upload to pypi?
+
+has this worked?
