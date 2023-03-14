@@ -10,7 +10,7 @@ class SettingsPopUp(Config):
         super().__init__()
 
         self.master = master
-        self.icon = ImageTk.PhotoImage(Image.open('resources/sc_icon2.png'))
+        self.icon = ImageTk.PhotoImage(Image.open(self.icon_path))
         self.set_popup = Toplevel(self.master)
 
         ws = master.winfo_screenwidth() # width of the screen

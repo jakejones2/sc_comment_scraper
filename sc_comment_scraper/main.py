@@ -3,6 +3,7 @@ from tkinter import ttk
 from PIL import ImageTk, Image
 import ctypes
 from config import Config
+import os
 from scraping_frame import ScrapingFrame
 from da_frame import DAFrame
 from url_input import UrlInput
@@ -27,10 +28,10 @@ class MainWindow(Config):
         self.master = master
         self.master.configure(background=self.background_colour)
         self.master.title(' Soundcloud Data Tools v1.5')
-        self.icon = ImageTk.PhotoImage(Image.open('resources/sc_icon2.png'))
+        self.icon = ImageTk.PhotoImage(Image.open(self.icon_path))
         self.master.iconphoto(False, self.icon)
         self.widget_list = []
-        self.error_log = []
+ 
         
         MainWindow.grid_configure(self.master, 'c1w1', 'r1w1')
 
@@ -42,12 +43,12 @@ class MainWindow(Config):
             ctypes.windll.shcore.SetProcessDpiAwareness(dpi)
             self.master.tk.call('tk', 'scaling', scaling)
             self.master.geometry('2700x1500')
-            self.img1 = ImageTk.PhotoImage(Image.open('resources/tab1b.png'))
-            self.img2 = ImageTk.PhotoImage(Image.open('resources/tab2b.png'))
+            self.img1 = ImageTk.PhotoImage(Image.open(self.tab1b_path))
+            self.img2 = ImageTk.PhotoImage(Image.open(self.tab2b_path))
         else:
             self.master.geometry('1100x700')
-            self.img1 = ImageTk.PhotoImage(Image.open('resources/tab1s.png'))
-            self.img2 = ImageTk.PhotoImage(Image.open('resources/tab2s.png'))
+            self.img1 = ImageTk.PhotoImage(Image.open(self.tab1s_path))
+            self.img2 = ImageTk.PhotoImage(Image.open(self.tab2s_path))
             self.style.configure('uhd.TButton', 
                                  foreground=self.text_colour, 
                                  background=self.tab_colour, 

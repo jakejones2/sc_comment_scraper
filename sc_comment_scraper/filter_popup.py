@@ -10,7 +10,7 @@ class FilterPopUp(Config):
         super().__init__()
 
         self.master = master
-        self.icon = ImageTk.PhotoImage(Image.open('resources/sc_icon2.png'))
+        self.icon = ImageTk.PhotoImage(Image.open(self.icon_path))
         self.filt_popup = Toplevel(self.master)
         self.filt_popup.configure(background=self.background_colour)
         self.filt_popup.title(" Custom filters")

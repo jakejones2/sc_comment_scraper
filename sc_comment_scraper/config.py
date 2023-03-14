@@ -1,4 +1,5 @@
 from tkinter import ttk
+import os
 
 class Config:
 
@@ -20,9 +21,19 @@ class Config:
     font_bold = 'Segoe UI Semibold'
     font_light = 'Segoe UI Semilight'
 
+    
 
-    #styles
     def __init__(self):
+        
+        #resource paths
+        self.dir = os.path.dirname(__file__)
+        self.icon_path = os.path.join(self.dir, r'resources\sc_icon2.png')
+        self.tab1b_path = os.path.join(self.dir, r'resources\tab1b.png')
+        self.tab2b_path = os.path.join(self.dir, r'resources\tab2b.png')
+        self.tab1s_path = os.path.join(self.dir, r'resources\tab1s.png')
+        self.tab2s_path = os.path.join(self.dir, r'resources\tab2s.png')
+
+        #styles
         self.style = ttk.Style()
         self.style.theme_use('default')
     

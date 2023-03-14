@@ -1,8 +1,8 @@
 to do:
     remove none asci? remove weird characters? or convert to normal? 
-    folder should equal datetime scraped!
     make sure retrieiving urls from parent is factored into progress bar
     make app replayable, currently crashes on second press of start
+    assign all attributes in the init method! change scrape and load urls methods??
 
     package up module?
     learn about unit testing and add tests to package
