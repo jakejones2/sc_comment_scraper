@@ -3,6 +3,7 @@ to do:
     make sure retrieiving urls from parent is factored into progress bar
     make app replayable, currently crashes on second press of start
     assign all attributes in the init method! change scrape and load urls methods??
+    didn't strip whitespace from urls in manual merge, also crashed
 
     package up module?
     learn about unit testing and add tests to package

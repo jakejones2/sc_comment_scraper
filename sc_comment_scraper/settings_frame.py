@@ -34,7 +34,6 @@ class SettingsFrame(Config):
             def send_filename(*args, **kwargs):
                 try:
                     settings.csvfilename = self.set_fn_var.get()
-                    settings.check_csvfilename()
                 except: pass
 
             self.set_fn_entry.config(state='active')

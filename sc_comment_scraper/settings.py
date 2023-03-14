@@ -20,10 +20,3 @@ class Settings:
         else:
             self.scroll = round(self.max_num / 10)
             self.extra_scroll = round(self.scroll / 4)
-
-    def check_csvfilename(self):
-        if self.csvfilename[-4] == '.csv':
-            pass
-        else:
-            self.csvfilename += '.csv'
-        
