@@ -6,7 +6,6 @@ class Settings:
         self.max_num = 100
         self.wait = 0.5
         self.headless = True
-        self.folder = ''
         self.scroll = 10
         self.extra_scroll = 3
 

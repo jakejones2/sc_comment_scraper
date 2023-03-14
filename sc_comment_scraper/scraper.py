@@ -111,6 +111,7 @@ class Scraper(Config):
 
     def scrape(self, url_input, settings, filters):
         self.start_time = time.time()
+        self.dt = datetime.now()
         self.comments_master_list = []
         self.timestamps_master_list = []
         self.datetimes_master_list = []
@@ -143,7 +144,6 @@ class Scraper(Config):
             
             #scroll the page
             self.progress_bar['value'] = (self.current_ops_update() + ((count - 1) * 20) + 10)
-            #this didn't work as a test:   self.progress_bar.step(30) problem is in progress bar migration from constructor? rebuild in the scraper?
             self.progress_bar.update()
             self.current_task.config(
                 text=f'Scrolling {url} and searching for comments')
@@ -289,12 +289,12 @@ class Scraper(Config):
                     self.artist = url.split('/')[-2]
                     if '?' in self.track:
                         self.track = self.track.split('?')[0]
-                    self.dir = f"csv_exports/{settings.folder}/{self.artist}, {self.track} [filter = {filters.filtername}]"
+                    self.dir = f"csv_exports/{self.dt:%Y-%m-%d %H:%M}/{self.artist}, {self.track} [filter = {filters.filtername}]"
                     self.dir = check_ind_dir(self.dir)
                 except:
                     messagebox.showwarning('Filename Error', 
                                          f'Failed to extract track name from {url}, file numbered instead.')
-                    self.dir = (f"csv_exports/{settings.folder}/url_{count} [filter = {filters.filtername}]")
+                    self.dir = (f"csv_exports/{self.dt:%Y-%m-%d %H:%M}/url_{count} [filter = {filters.filtername}]")
                     self.dir = check_ind_dir(self.dir, filters)
                 # write data 
                 try:
