@@ -289,12 +289,12 @@ class Scraper(Config):
                     self.artist = url.split('/')[-2]
                     if '?' in self.track:
                         self.track = self.track.split('?')[0]
-                    self.dir = f"csv_exports/{self.dt:%Y-%m-%d %H:%M}/{self.artist}, {self.track} [filter = {filters.filtername}]"
-                    self.dir = check_ind_dir(self.dir)
+                    self.dir = f"csv_exports/{self.dt:%Y-%m-%d %H.%M}/{self.artist}, {self.track}"
+                    self.dir = check_ind_dir(self.dir, filters)
                 except:
                     messagebox.showwarning('Filename Error', 
                                          f'Failed to extract track name from {url}, file numbered instead.')
-                    self.dir = (f"csv_exports/{self.dt:%Y-%m-%d %H:%M}/url_{count} [filter = {filters.filtername}]")
+                    self.dir = (f"csv_exports/{self.dt:%Y-%m-%d %H.%M}/url_{count}")
                     self.dir = check_ind_dir(self.dir, filters)
                 # write data 
                 try:
