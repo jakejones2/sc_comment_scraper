@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
-from config import Config
-from settings_popup import SettingsPopUp
-from filter_frame import FilterFrame
+from app.gui.config import Config
+from app.gui.settings_popup import SettingsPopUp
+from app.gui.filter_frame import FilterFrame
 
 class SettingsFrame(Config):
     

@@ -1,0 +1,30 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "sc_comment_scraper"
+version = "0.0.1"
+description = "Scrapes user comments from soundcloud.com via a tkinter GUI. Intended for use in music research."
+authors = [
+  { name = "Jake Jones", email = "jakejones1998@hotmail.co.uk" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.7"
+dependencies = [
+  "emoji >= 2.2.0",
+  "pandas >= 1.5.3",
+  "Pillow >= 9.4.0",
+  "selenium >= 4.8.0",
+  "webdriver-manager >= 3.8.5"
+
+]
+
+[project.urls]
+homepage = "https://github.com/jakejones2/sc_comment_scraper"

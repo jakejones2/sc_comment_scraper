@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from config import Config
-from filter_popup import FilterPopUp
+from app.gui.config import Config
+from app.gui.filter_popup import FilterPopUp
 
 class FilterFrame(Config):
     

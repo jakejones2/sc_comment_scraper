@@ -1,8 +1,8 @@
 from tkinter import ttk
-from config import Config
-from start_frame import StartFrame
-from url_frame import UrlFrame
-from settings_frame import SettingsFrame
+from app.gui.config import Config
+from app.gui.start_frame import StartFrame
+from app.gui.url_frame import UrlFrame
+from app.gui.settings_frame import SettingsFrame
 
 class ScrapingFrame(Config):
 

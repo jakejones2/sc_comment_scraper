@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
-from config import Config
+from app.gui.config import Config
 
 class UrlFrame(Config):
 

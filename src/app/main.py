@@ -2,13 +2,13 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import ImageTk, Image
 import ctypes
-from config import Config
+from app.gui.config import Config
 import os
-from scraping_frame import ScrapingFrame
-from da_frame import DAFrame
-from url_input import UrlInput
-from settings import Settings
-from filters import Filters
+from app.gui.scraping_frame import ScrapingFrame
+from app.gui.da_frame import DAFrame
+from app.backend.url_input import UrlInput
+from app.backend.settings import Settings
+from app.backend.filters import Filters
 
 class MainWindow(Config):
 

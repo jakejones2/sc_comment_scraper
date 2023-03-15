@@ -13,9 +13,9 @@ import re
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from config import Config
-from backup_ui import UI
-from check_dir import check_merged_dir, check_ind_dir
+from app.gui.config import Config
+from app.backend.backup_ui import UI
+from app.backend.check_dir import check_merged_dir, check_ind_dir
 
 class Scraper(Config):
     
@@ -299,7 +299,7 @@ class Scraper(Config):
                 # write data 
                 try:
                     os.makedirs(os.path.dirname(self.dir), exist_ok=True)
-                    with open('{}'.format(f"{self.dir}.csv"), 
+                    with open('{}'.format(f"{self.dir}"), 
                               'w', 
                               encoding='utf-8', 
                               newline='') as csvfile:

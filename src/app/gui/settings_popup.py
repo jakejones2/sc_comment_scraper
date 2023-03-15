@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import ImageTk, Image
 from tkinter import Toplevel
-from config import Config
+from app.gui.config import Config
 
 class SettingsPopUp(Config):
 

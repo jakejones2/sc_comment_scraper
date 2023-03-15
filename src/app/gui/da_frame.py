@@ -1,6 +1,6 @@
 from tkinter import ttk
 
-from config import Config
+from app.gui.config import Config
 
 class DAFrame(Config):
 

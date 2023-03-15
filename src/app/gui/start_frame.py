@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from config import Config
-from scraper import Scraper
+from app.gui.config import Config
+from app.backend.scraper import Scraper
 
 class StartFrame(Config):
 
