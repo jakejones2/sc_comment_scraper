@@ -23,8 +23,26 @@ dependencies = [
   "Pillow >= 9.4.0",
   "selenium >= 4.8.0",
   "webdriver-manager >= 3.8.5"
+]
 
+[project.optional-dependencies]
+dev = [
+  "pytest >= 7.2.2",
+  "pytest-cov >= 4.0.0",
+  "flake8 >= 6.0.0",
+  "mypy >= 1.1.1"
 ]
 
 [project.urls]
 homepage = "https://github.com/jakejones2/sc_comment_scraper"
+
+[tool.pytest.ini_options]
+minversion = "7.2.2"
+addopts = "--cov=app"
+testpaths = [
+    "tests",
+    "integration",
+]
+
+[tool.mypy]
+mypy_path = "src"

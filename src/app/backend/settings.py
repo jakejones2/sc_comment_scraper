@@ -1,15 +1,14 @@
 class Settings:
-
     def __init__(self):
         self.csv_merge = False
-        self.csvfilename = ''
+        self.csvfilename = ""
         self.max_num = 100
         self.wait = 0.5
         self.headless = True
         self.scroll = 10
         self.extra_scroll = 3
 
-    #initial scroll
+    # initial scroll
     def estimate_scroll(self):
         if self.max_num <= 10:
             self.scroll = 1

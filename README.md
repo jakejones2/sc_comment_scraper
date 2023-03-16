@@ -29,3 +29,5 @@ halfway through using pathlib to sort out filenames (check dir), also adding uni
 why is vs code running terminal from parent folder and how do i change it
 how do tests work in vs code section
 
+need to learn about console scripts, entry points, gui stuff in the toml
+https://packaging.python.org/en/latest/specifications/entry-points/
