@@ -9,6 +9,8 @@ to do:
     learn about tests more - use pytest. package first?? ahhhh! or continue to build and package at end? can you modify a package or does it need to be continusouly installed? 
     virtual environment?
 
+    fix git! git.ignore still not working... don't delete it all this time though
+
     package up module?
     learn about unit testing and add tests to package
     speed up loading time? or add a nice message as it does?
@@ -18,9 +20,6 @@ to do:
     learn about dependencies
     create readme and liscence
     upload to pypi?
-
-create virtual environment
-https://code.visualstudio.com/docs/python/environments
 
 tests
 https://stackoverflow.com/questions/23984973/how-to-run-tests-without-installing-package
