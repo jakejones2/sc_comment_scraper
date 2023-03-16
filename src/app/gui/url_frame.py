@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 from app.gui.config import Config
+from app.backend.paths import MyPaths
 
 
 class UrlFrame(Config):
@@ -37,10 +38,10 @@ class UrlFrame(Config):
         )
         self.url_heading_label.grid(row=0, column=0, columnspan=3, sticky="nw")
 
-        # url text input
+        # url file input
         def browse_files():
             filename = filedialog.askopenfilename(
-                initialdir="/",
+                initialdir=MyPaths.urls_path,
                 title="Select a File",
                 filetypes=(("Text files", "*.txt*"), ("all files", "*.*")),
             )

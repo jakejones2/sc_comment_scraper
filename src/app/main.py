@@ -9,6 +9,7 @@ from app.gui.da_frame import DAFrame
 from app.backend.url_input import UrlInput
 from app.backend.settings import Settings
 from app.backend.filters import Filters
+from app.backend.paths import MyPaths
 
 
 class MainWindow(Config):
@@ -28,7 +29,7 @@ class MainWindow(Config):
         self.master = master
         self.master.configure(background=self.background_colour)
         self.master.title(" Soundcloud Data Tools v1.5")
-        self.icon = ImageTk.PhotoImage(Image.open(self.icon_path))
+        self.icon = ImageTk.PhotoImage(Image.open(MyPaths.icon_path))
         self.master.iconphoto(False, self.icon)
         self.widget_list = []
 
@@ -42,12 +43,12 @@ class MainWindow(Config):
             ctypes.windll.shcore.SetProcessDpiAwareness(dpi)
             self.master.tk.call("tk", "scaling", scaling)
             self.master.geometry("2700x1500")
-            self.img1 = ImageTk.PhotoImage(Image.open(self.tab1b_path))
-            self.img2 = ImageTk.PhotoImage(Image.open(self.tab2b_path))
+            self.img1 = ImageTk.PhotoImage(Image.open(MyPaths.tab1b_path))
+            self.img2 = ImageTk.PhotoImage(Image.open(MyPaths.tab2b_path))
         else:
             self.master.geometry("1100x700")
-            self.img1 = ImageTk.PhotoImage(Image.open(self.tab1s_path))
-            self.img2 = ImageTk.PhotoImage(Image.open(self.tab2s_path))
+            self.img1 = ImageTk.PhotoImage(Image.open(MyPaths.tab1s_path))
+            self.img2 = ImageTk.PhotoImage(Image.open(MyPaths.tab2s_path))
             self.style.configure(
                 "uhd.TButton",
                 foreground=self.text_colour,

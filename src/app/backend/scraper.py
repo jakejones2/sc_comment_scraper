@@ -16,6 +16,7 @@ from tkinter import messagebox
 from app.gui.config import Config
 from app.backend.backup_ui import UI
 from app.backend.check_dir import check_merged_dir, check_ind_dir
+from app.backend.paths import MyPaths
 
 
 class Scraper(Config):
@@ -342,7 +343,8 @@ class Scraper(Config):
                     self.artist = url.split("/")[-2]
                     if "?" in self.track:
                         self.track = self.track.split("?")[0]
-                    self.dir = f"csv_exports/{self.dt:%Y-%m-%d %H.%M}/{self.artist}, {self.track}"
+                    
+                    self.dir = f"{MyPaths.csv_path}/{self.dt:%Y-%m-%d %H.%M}/{self.artist}, {self.track}"
                     self.dir = check_ind_dir(self.dir, filters)
                 except:
                     messagebox.showwarning(

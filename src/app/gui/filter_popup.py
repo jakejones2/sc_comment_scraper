@@ -3,6 +3,7 @@ from tkinter import ttk
 from PIL import ImageTk, Image
 from tkinter import Toplevel
 from app.gui.config import Config
+from app.backend.paths import MyPaths
 
 
 class FilterPopUp(Config):
@@ -10,7 +11,7 @@ class FilterPopUp(Config):
         super().__init__()
 
         self.master = master
-        self.icon = ImageTk.PhotoImage(Image.open(self.icon_path))
+        self.icon = ImageTk.PhotoImage(Image.open(MyPaths.icon_path))
         self.filt_popup = Toplevel(self.master)
         self.filt_popup.configure(background=self.background_colour)
         self.filt_popup.title(" Custom filters")

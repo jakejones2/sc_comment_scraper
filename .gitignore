@@ -1,5 +1,6 @@
 Drivers/
 csv_exports/
+url_lists/
 
 #-------------------standard python .gitignore-------------------
 
