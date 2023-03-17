@@ -80,7 +80,14 @@ class SettingsPopUp(Config):
         self.set_hdl_cb.grid(
             row=2, column=0, columnspan=2, padx=pd * 3, pady=pd
         )
-        if self.set_hdl_var.get():
-            settings.headless = False
-        else:
-            settings.headless = True
+
+        def trace_set_hdl(*args, **kwargs):
+            try:
+                if self.set_hdl_var.get():
+                    settings.headless = False
+                else:
+                    settings.headless = True
+            except:
+                pass
+
+        self.set_hdl_var.trace_add("write", trace_set_hdl)

@@ -53,6 +53,7 @@ class UrlFrame(Config):
 
         def textinp():
             self.clear_widgets()
+            url_input.reset_url_input()
             self.url_subheading_label = ttk.Label(
                 self.url_frame,
                 text="Browse for .txt file",
@@ -83,6 +84,8 @@ class UrlFrame(Config):
 
         def artinp():
             self.clear_widgets()
+            url_input.reset_url_input()
+            url_input.artist = True
             self.url_subheading_label = ttk.Label(
                 self.url_frame,
                 text="Enter URL of artist's SoundCloud 'track' page below:",
@@ -107,6 +110,7 @@ class UrlFrame(Config):
         # url playlist input
         def playinp():
             self.clear_widgets()
+            url_input.reset_url_input()
             self.url_subheading_label = ttk.Label(
                 self.url_frame,
                 text="Enter URL of SoundCloud playlist below:",
@@ -178,6 +182,7 @@ class UrlFrame(Config):
                 update_urls()
 
             self.clear_widgets()
+            url_input.reset_url_input()
             # dict binds tkinter variables to row of entry widget
             self.url_variables_dict = {}
             self.url_subheading_label = ttk.Label(

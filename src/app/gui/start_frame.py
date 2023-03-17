@@ -29,6 +29,9 @@ class StartFrame(Config):
             )
 
         def start():
+            #load urls
+            self.scraper.load_urls(url_input, settings)
+            #check for custom filters
             if filters.current_no_cbutton and filters.current_no_cfilter:
                 filters.add_or_remove_cfilter(
                     "add", "exclude", filters.current_no_cfilter
@@ -41,8 +44,25 @@ class StartFrame(Config):
                 filters.add_or_remove_cfilter(
                     "add", "omit", filters.current_omit_cfilter
                 )
-            self.scraper.load_urls(url_input, settings)
+            self.start_button.config(state='disabled')
+            #scrape
             self.scraper.scrape(url_input, settings, filters)
+            self.start_button.config(state='normal')
+
+            #remove previous custom filters -- do this automatically like built ins!!!
+            if filters.current_no_cbutton and filters.current_no_cfilter:
+                filters.add_or_remove_cfilter(
+                    "remove", "exclude", filters.current_no_cfilter
+                )
+            if filters.current_only_cbutton and filters.current_only_cfilter:
+                filters.add_or_remove_cfilter(
+                    "remove", "include", filters.current_only_cfilter
+                )
+            if filters.current_omit_cbutton and filters.current_omit_cfilter:
+                filters.add_or_remove_cfilter(
+                    "remove", "omit", filters.current_omit_cfilter
+                )
+
 
         self.style.configure(
             "start.TButton",

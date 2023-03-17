@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 import time
 import csv
 import os
-from datetime import datetime  # check this one
+from datetime import datetime
 import emoji
 import re
 
@@ -21,11 +21,14 @@ from app.backend.paths import MyPaths
 
 class Scraper(Config):
     def __init__(self, settings, start_frame, pd):
+        '''instance creates the tkinter progress bar and
+        current operations label'''
         super().__init__()
 
-        # create widgets
+        # create frame
         self.run_frame = ttk.Frame(start_frame, style="start.TFrame")
 
+        # create progress bar
         self.style.configure(
             "Horizontal.TProgressbar",
             troughcolor=self.tab_colour,
@@ -34,7 +37,6 @@ class Scraper(Config):
             background=self.green,
             bordercolour=self.tab_colour,
         )
-
         self.progress_bar = ttk.Progressbar(
             self.run_frame,
             length=pd * 95,
@@ -44,6 +46,7 @@ class Scraper(Config):
         )
         self.progress_bar.grid(column=0, row=0, sticky="nw")
 
+        # create current operation label
         self.style.configure(
             "task.TLabel",
             font=(self.font_light, 10),
@@ -56,62 +59,140 @@ class Scraper(Config):
             text="Press start to begin scraping",
         )
         self.current_task.grid(column=0, row=1, sticky="nw")
+    
+        # all attributes
+        self.current_ops = 0 # tracks completed ops for progress bar
+        self.options = Options() # chrome driver options
+        self.driver = '' # will denote chromedriver
+        self.track_scroll = 0 # estimated number of scrolls for parent url 
+        self.comments_master_list = [] # all comments stored here
+        self.timestamps_master_list = [] # all timestamps 
+        self.datetimes_master_list = [] # all datetimes
+        self.previous_comments = [] # used to prevent infinite comment loop
+
+        self.comments_list = [] # temp storage used in comment loop
+        self.index_list = [] # used to log position of retrieved comments
+        self.comments_list_length = [] # prevents infinite loop
+        self.comment_count = 0 # used in comment loop
+
+        self.track = '' # used to generate csv filename
+        self.artist = '' # used to generate csv filename
+        self.dir = '' # path for csv file
+
+    def current_ops_update(self):
+
+        '''calculates the number of completed operations'''
+
+        self.current_ops = (
+            len(self.comments_master_list)
+            + len(self.timestamps_master_list)
+            + len(self.datetimes_master_list)
+        )
+        return self.current_ops
+    
+
+    def load_urls(self, url_input, settings):
+
+        '''initialises chrome driver, and retrieves urls from the specified
+        parent url (either a soundcloud playlist or artist 'track' page).
+        These are added to url_input.url_list'''
+
+        # ensure attributes are reset in case scrape repeated
+        self.track_scroll = 0
+
+        # estimates number of scrolls needed to find track urls
+        # assumes each scroll generates 10 tracks on page
+        # if url input set to manual or by file, this is skipped
+        if url_input.parent_url:
+            if url_input.url_max < 10:
+                self.track_scroll = 0
+            else:
+                self.track_scroll = round(int(url_input.url_max) / 10)
+        
+        # calculating total operations and configuring progress bar
+        if url_input.parent_url:
+            self.total_ops = (
+                (3 * settings.max_num * url_input.url_max)
+                + (30 * url_input.url_max)
+                + (len(url_input.parent_url) # adds ops if parent_url scraped
+                + (5 * self.track_scroll)) # adds ops if parent_url scrolled
+                + 10) # adds ops for driver boot
+            self.progress_bar.config(maximum=self.total_ops)
+        else:
+            self.total_ops = (
+                (3 * settings.max_num * len(url_input.url_list))
+                + (30 * len(url_input.url_list))
+                + 10) # adds ops for driver boot
+            self.progress_bar.config(maximum=self.total_ops)
+
+        # update progress bar
+        self.progress_bar["value"]  = 1
+        self.current_task.config(
+            text="Initialising Google Chrome driver..."
+        )
+        self.progress_bar.update()
 
         # initialise headless chrome browser using driver manager
         try:
-            self.current_task.config(
-                text="Initialising Google Chrome driver..."
-            )
-            self.options = Options()
             self.options.add_experimental_option(
                 "excludeSwitches", ["enable-logging"]
             )
-            prefs = {"profile.managed_default_content_settings.images": 2}
-            self.options.add_experimental_option("prefs", prefs)
+            self.options.add_experimental_option(
+                "prefs", 
+                {"profile.managed_default_content_settings.images": 2}
+            )
             if settings.headless:
                 self.options.add_argument("--headless")
                 self.options.add_argument("--mute-audio")
+
+            # attempts to stop 'webdriver-manager' package from 
+            # printing installation in terminal (not working)
             os.environ["WDM_PROGRESS_BAR"] = ""
+
+            # creating chromedriver instance
             self.driver = webdriver.Chrome(
                 service=Service(
                     ChromeDriverManager(path=r".\\Drivers").install()
                 ),
                 options=self.options,
             )
-            self.current_task.config(text="Press start to begin scraping")
-
         except:
             messagebox.showerror(
                 "Scraping Error", "Failed to initialise Google Chrome driver"
             )
 
-    def load_urls(self, url_input, settings):
-        self.extra_ops = 0
+        # if a parent_url attribute is present, scrape this url
         if url_input.parent_url:
+
+            # update progress bar
             self.current_task.config(
-                text="Retrieving tracks from artist or playlist..."
+                text="Retrieving artist or playlist url..."
             )
+            self.progress_bar['value'] = 10 # driver booted ops
+            self.progress_bar.update()
+
+            # clears any previous url_list generated via parent url
+            url_input.url_list = []
+
+            # scrape parent url
             try:
                 self.driver.get(url_input.parent_url)
             except:
                 messagebox.showerror(
                     "Scraping Error", "Failed to retrieve artist/playlist URL"
                 )
-            if url_input.url_max < 10:
-                self.track_scroll = 0
-            else:
-                self.track_scroll = round(int(url_input.url_max) / 10)
-            
-            self.extra_ops = 20 + self.track_scroll
-            self.total_ops = (3 * settings.max_num * url_input.url_max) + (
-                20 * url_input.url_max) + self.extra_ops
-            self.progress_bar.config(maximum=self.total_ops)
 
+            # update progress bar
             self.current_task.config(
-                text=f"Scrolling {url_input.parent_url} and retrieving tracks"
+                text=f"Parent url: {url_input.parent_url}  |  Scrolling page and retrieving tracks"
             )
+            self.progress_bar.update()
+
+            # retrieving track urls
             try:
                 while True:
+
+                    # scroll page the estimated number of times
                     for n in range(self.track_scroll):
                         try:
                             self.driver.execute_script(
@@ -120,50 +201,67 @@ class Scraper(Config):
                             time.sleep(settings.wait)
                         except:
                             time.sleep(0.5)
+
+                    # search for track links
                     if url_input.artist:
-                        self.links = self.driver.find_elements(
+                        track_elements = self.driver.find_elements(
                             By.CLASS_NAME, "soundTitle__title"
                         )
                     else:
-                        self.links = self.driver.find_elements(
+                        track_elements = self.driver.find_elements(
                             By.CLASS_NAME, "trackItem__trackTitle"
                         )
-                    if len(self.links) >= url_input.url_max:
+
+                    # check there are enough elements
+                    if len(track_elements) >= url_input.url_max:
                         break
-                for count, link in enumerate(self.links, start=1):
+
+                    # update progress bar
+                    self.progress_bar['value'] += (
+                        len(url_input.parent_url) # parent url scraped
+                    )
+                    self.progress_bar.update()
+
+                # add the right amount of links to url_list
+                for count, element in enumerate(track_elements, start=1):
                     if count > url_input.url_max:
                         break
                     else:
-                        url_input.url_list.append(link.get_attribute("href"))
+                        url_input.url_list.append(element.get_attribute("href"))
             except:
                 messagebox.showerror(
                     "Scraping Error",
                     "Failed to find links on track/playlist URL",
                 )
+            
+            # update progress bar (start frame now adds any custom filters)
+            self.current_task.config(
+                text=f"Parent url: {url_input.parent_url}  |  Loading filters"
+            )
+            self.progress_bar['value'] += (
+                (5 * self.track_scroll) # parent url scrolled
+            )
+            self.progress_bar.update()
 
     def scrape(self, url_input, settings, filters):
-        self.start_time = time.time()
-        self.dt = datetime.now()
         self.comments_master_list = []
         self.timestamps_master_list = []
         self.datetimes_master_list = []
         self.previous_comments = []
 
-        #self.total_comments = len(url_input.url_list) * settings.max_num
-        if not url_input.parent_url:
-            self.total_ops = (3 * settings.max_num * len(url_input.url_list)) + (
-                20 * len(url_input.url_list)
-            ) + self.extra_ops
-            self.progress_bar.config(maximum=self.total_ops)
+        scrape_start_time = time.time()
+        scrape_datetime = datetime.now()
 
         for count, url in enumerate(url_input.url_list, start=1):
-            # try destroy widget here????? see what happens lol
-            self.progress_bar["value"] = self.current_ops_update() + (
-                (count - 1) * 20
-            ) + self.extra_ops
-            self.progress_bar.update()
-            self.current_task.config(text=f"Retrieving {url}...")
+            
+            # update progress bar
+            self.current_task.config(
+                text=f"url{count}: {url}  |  Retrieving url..."
+            )
+            self.progress_bar["value"] += 10 # driver ops
             self.current_task.update()
+
+            #get url
             try:
                 self.driver.get(url)
             except:
@@ -181,16 +279,14 @@ class Scraper(Config):
                 except:
                     pass
 
-            # scroll the page
-            self.progress_bar["value"] = (
-                self.current_ops_update() + ((count - 1) * 20) + 10
-            ) + self.extra_ops
-            self.progress_bar.update()
+            # update progress bar
+            self.progress_bar["value"] += 2 # got url/cookies
             self.current_task.config(
-                text=f"Scrolling {url} and searching for comments"
+                text=f"url{count}: {url}  |  Scrolling page..."
             )
             self.current_task.update()
 
+            # scroll page and find comments
             try:
                 # initial scroll
                 for n in range(settings.scroll):
@@ -199,10 +295,17 @@ class Scraper(Config):
                             "window.scrollTo(0, document.body.scrollHeight);"
                         )
                         time.sleep(settings.wait)
-                        # stop the gui from 'not responding'
+                        # update stops the gui from 'not responding'
                         self.current_task.update()
                     except:
                         time.sleep(0.5)
+
+                # finishhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+                self.current_task.config(
+                    text=f"url{count}: {url}  |  Retrieving comments..."
+                )
+                self.progress_bar["value"] += 18 # scrolled page
+                self.current_task.update()
 
                 self.comments_list = []
                 self.index_list = []
@@ -211,6 +314,7 @@ class Scraper(Config):
 
                 # comment-retrieving loop
                 while True:
+                    # find all comments
                     self.comments = self.driver.find_elements(
                         By.CLASS_NAME, "commentItem__body"
                     )
@@ -285,18 +389,17 @@ class Scraper(Config):
                 # append final comments list to master
                 for c in self.comments_list:
                     self.comments_master_list.append(c)
+
+                #update progress bar
+                self.progress_bar["value"] += settings.max_num # one url's comments
+                self.current_task.config(text=f"url{count}: {url}  |  Retrieving timestamps...")
+                self.current_task.update()
             except:
                 messagebox.showerror(
                     "Scraping Error", f"Failed to retrieve comments from {url}"
                 )
 
             # find all timestamps
-            self.progress_bar["value"] = (
-                self.current_ops_update() + ((count - 1) * 20) + 10
-            ) + self.extra_ops
-            self.progress_bar.update()
-            self.current_task.config(text=f"Retrieving timestamps from {url}")
-            self.current_task.update()
             try:
                 self.timestamps = self.driver.find_elements(
                     By.CLASS_NAME, "commentItem__timestampLink"
@@ -314,13 +417,14 @@ class Scraper(Config):
                     f"Failed to find timestamps in {url} HTML",
                 )
 
-            # find all dates posted
-            self.progress_bar["value"] = (
-                self.current_ops_update() + ((count - 1) * 20) + 10
-            ) + self.extra_ops
-            self.progress_bar.update()
-            self.current_task.config(text=f"Retrieving datetimes from {url}")
+            # update progress bar
+            self.progress_bar["value"] += settings.max_num # one url's timestamps
+            self.current_task.config(
+                text=f"url{count}: {url}  |  Retrieving datetimes..."
+            )
             self.current_task.update()
+
+            # find all datetimes posted
             try:
                 self.dates = self.driver.find_elements(
                     By.CLASS_NAME, "relativeTime"
@@ -339,23 +443,27 @@ class Scraper(Config):
                     "Scraping Error", f"Failed to find datetimes in {url} HTML"
                 )
 
+            # update progress bar
+            self.progress_bar["value"] += settings.max_num # one url's datetimes
+
+
             # write data to individual csv
-            self.progress_bar["value"] = (
-                self.current_ops_update() + ((count - 1) * 20) + 9
-            ) + self.extra_ops
-            self.progress_bar.update()
             if not settings.csv_merge:
+
+                # update progress bar
+                self.current_task.config(
+                text=f"url{count}: {url}  |  Writing to CSV..."
+                )
+                self.current_task.update()
+
                 # extract title name from url and apply filtername
                 # placing in csv_exports folder via relative path
-                self.current_task.config(text=f"Writing {url} comments to CSV")
-                self.current_task.update()
                 try:
                     self.track = url.split("/")[-1]
                     self.artist = url.split("/")[-2]
                     if "?" in self.track:
                         self.track = self.track.split("?")[0]
-                    
-                    self.dir = f"{MyPaths.csv_path}/{self.dt:%Y-%m-%d %H.%M}/{self.artist}, {self.track}"
+                    self.dir = f"{MyPaths.csv_path}/{scrape_datetime:%Y-%m-%d %H.%M}/{self.artist}, {self.track}"
                     self.dir = check_ind_dir(self.dir, filters)
                 except:
                     messagebox.showwarning(
@@ -363,7 +471,7 @@ class Scraper(Config):
                         f"Failed to extract track name from {url}, file numbered instead.",
                     )
                     self.dir = (
-                        f"csv_exports/{self.dt:%Y-%m-%d %H.%M}/url_{count}"
+                        f"csv_exports/{scrape_datetime:%Y-%m-%d %H.%M}/url_{count}"
                     )
                     self.dir = check_ind_dir(self.dir, filters)
                 # write data
@@ -402,14 +510,14 @@ class Scraper(Config):
                         self.timestamps_list,
                         self.datetimes_list,
                     )
+                
+                # update progress bar
+                self.progress_bar["value"] += 10 #csv writing
 
         # quit browser and write data to merged csv
         self.driver.quit()
         if settings.csv_merge:
-            self.progress_bar["value"] = (
-                self.current_ops_update() + ((count - 1) * 20) + 19
-            ) + self.extra_ops
-            self.current_task.config(text="Writing comments to CSV")
+            self.current_task.config(text="Writing all comments to CSV...")
             self.current_task.update()
             self.dir = f"csv_exports/{settings.csvfilename}"
             self.dir = check_merged_dir(self.dir)
@@ -447,19 +555,17 @@ class Scraper(Config):
                     self.datetimes_master_list,
                 )
         self.progress_bar["value"] = self.total_ops
-        self.current_task.config(
-            text="Completed in %s seconds"
-            % (round(time.time() - self.start_time, 2))
-        )
+        seconds = time.time() - scrape_start_time
+        if seconds >= 60:
+            min, sec = divmod(seconds, 60)
+            self.current_task.config(
+                text=f"Completed in {min:.0f} minutes and {sec:.2f} seconds"
+            )
+        else:
+            self.current_task.config(
+                text=f"Completed in {seconds:.2f} seconds"
+            )
         self.current_task.update()
-
-    def current_ops_update(self):
-        self.current_ops = (
-            len(self.comments_master_list)
-            + len(self.timestamps_master_list)
-            + len(self.datetimes_master_list)
-        )
-        return self.current_ops
 
     def test(self, settings, url_input, filters):
         # url input

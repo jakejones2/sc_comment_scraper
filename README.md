@@ -18,3 +18,5 @@ to do:
 
 need to learn about console scripts, entry points, gui stuff in the toml
 https://packaging.python.org/en/latest/specifications/entry-points/
+
+scroll bar was weird with beyonce tracks, 4 urls, 60 per url, no filters and unhide chrome browser

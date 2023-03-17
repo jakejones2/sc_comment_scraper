@@ -19,3 +19,8 @@ class UrlInput:
                     self.url_list = [x for x in self.url_list if x.strip()]
             except:
                 return "Invalid file"
+            
+    def reset_url_input(self):
+        self.url_list = []
+        self.parent_url = ""
+        self.artist = False
