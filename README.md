@@ -1,4 +1,5 @@
 to do:
+    the 'tracks' parent url crashes, but playlist works fine
     remove none asci char? remove weird characters? or convert to normal? 
     make sure retrieiving urls from parent is factored into progress bar
     make app replayable, currently crashes on second press of start

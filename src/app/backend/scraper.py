@@ -86,6 +86,7 @@ class Scraper(Config):
             )
 
     def load_urls(self, url_input, settings):
+        self.extra_ops = 0
         if url_input.parent_url:
             self.current_task.config(
                 text="Retrieving tracks from artist or playlist..."
@@ -100,6 +101,15 @@ class Scraper(Config):
                 self.track_scroll = 0
             else:
                 self.track_scroll = round(int(url_input.url_max) / 10)
+            
+            self.extra_ops = 20 + self.track_scroll
+            self.total_ops = (3 * settings.max_num * url_input.url_max) + (
+                20 * url_input.url_max) + self.extra_ops
+            self.progress_bar.config(maximum=self.total_ops)
+
+            self.current_task.config(
+                text=f"Scrolling {url_input.parent_url} and retrieving tracks"
+            )
             try:
                 while True:
                     for n in range(self.track_scroll):
@@ -139,17 +149,18 @@ class Scraper(Config):
         self.datetimes_master_list = []
         self.previous_comments = []
 
-        self.total_comments = len(url_input.url_list) * settings.max_num
-        self.total_ops = (3 * settings.max_num * len(url_input.url_list)) + (
-            20 * len(url_input.url_list)
-        )
-        self.progress_bar.config(maximum=self.total_ops)
+        #self.total_comments = len(url_input.url_list) * settings.max_num
+        if not url_input.parent_url:
+            self.total_ops = (3 * settings.max_num * len(url_input.url_list)) + (
+                20 * len(url_input.url_list)
+            ) + self.extra_ops
+            self.progress_bar.config(maximum=self.total_ops)
 
         for count, url in enumerate(url_input.url_list, start=1):
             # try destroy widget here????? see what happens lol
             self.progress_bar["value"] = self.current_ops_update() + (
                 (count - 1) * 20
-            )
+            ) + self.extra_ops
             self.progress_bar.update()
             self.current_task.config(text=f"Retrieving {url}...")
             self.current_task.update()
@@ -173,7 +184,7 @@ class Scraper(Config):
             # scroll the page
             self.progress_bar["value"] = (
                 self.current_ops_update() + ((count - 1) * 20) + 10
-            )
+            ) + self.extra_ops
             self.progress_bar.update()
             self.current_task.config(
                 text=f"Scrolling {url} and searching for comments"
@@ -282,7 +293,7 @@ class Scraper(Config):
             # find all timestamps
             self.progress_bar["value"] = (
                 self.current_ops_update() + ((count - 1) * 20) + 10
-            )
+            ) + self.extra_ops
             self.progress_bar.update()
             self.current_task.config(text=f"Retrieving timestamps from {url}")
             self.current_task.update()
@@ -306,7 +317,7 @@ class Scraper(Config):
             # find all dates posted
             self.progress_bar["value"] = (
                 self.current_ops_update() + ((count - 1) * 20) + 10
-            )
+            ) + self.extra_ops
             self.progress_bar.update()
             self.current_task.config(text=f"Retrieving datetimes from {url}")
             self.current_task.update()
@@ -331,7 +342,7 @@ class Scraper(Config):
             # write data to individual csv
             self.progress_bar["value"] = (
                 self.current_ops_update() + ((count - 1) * 20) + 9
-            )
+            ) + self.extra_ops
             self.progress_bar.update()
             if not settings.csv_merge:
                 # extract title name from url and apply filtername
@@ -397,7 +408,7 @@ class Scraper(Config):
         if settings.csv_merge:
             self.progress_bar["value"] = (
                 self.current_ops_update() + ((count - 1) * 20) + 19
-            )
+            ) + self.extra_ops
             self.current_task.config(text="Writing comments to CSV")
             self.current_task.update()
             self.dir = f"csv_exports/{settings.csvfilename}"
