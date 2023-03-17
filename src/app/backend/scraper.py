@@ -190,6 +190,7 @@ class Scraper(Config):
 
             # retrieving track urls
             try:
+                previous_elements = []
                 while True:
 
                     # scroll page the estimated number of times
@@ -215,6 +216,11 @@ class Scraper(Config):
                     # check there are enough elements
                     if len(track_elements) >= url_input.url_max:
                         break
+
+                    # ensure scrolling loop breaks
+                    if len(previous_elements) >= len(track_elements):
+                        break
+                    previous_elements = track_elements
 
                     # update progress bar
                     self.progress_bar['value'] += (
