@@ -15,7 +15,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from app.gui.config import Config
 from app.backend.backup_ui import UI
-from app.backend.check_dir import check_merged_dir, check_ind_dir
+from app.backend import check_dir
 from app.backend.paths import MyPaths
 
 
@@ -306,13 +306,14 @@ class Scraper(Config):
                     except:
                         time.sleep(0.5)
 
-                # finishhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+                # update progress bar
                 self.current_task.config(
                     text=f"url{count}: {url}  |  Retrieving comments..."
                 )
                 self.progress_bar["value"] += 18 # scrolled page
                 self.current_task.update()
 
+                # reset data collected
                 self.comments_list = []
                 self.index_list = []
                 self.comments_list_length = []
@@ -463,23 +464,9 @@ class Scraper(Config):
                 self.current_task.update()
 
                 # extract title name from url and apply filtername
-                # placing in csv_exports folder via relative path
-                try:
-                    self.track = url.split("/")[-1]
-                    self.artist = url.split("/")[-2]
-                    if "?" in self.track:
-                        self.track = self.track.split("?")[0]
-                    self.dir = f"{MyPaths.csv_path}/{scrape_datetime:%Y-%m-%d %H.%M}/{self.artist}, {self.track}"
-                    self.dir = check_ind_dir(self.dir, filters)
-                except:
-                    messagebox.showwarning(
-                        "Filename Error",
-                        f"Failed to extract track name from {url}, file numbered instead.",
-                    )
-                    self.dir = (
-                        f"csv_exports/{scrape_datetime:%Y-%m-%d %H.%M}/url_{count}"
-                    )
-                    self.dir = check_ind_dir(self.dir, filters)
+                # create relative path to csv_exports folder
+                check_dir.create_ind_dir(url, filters, scrape_datetime, count)
+
                 # write data
                 try:
                     os.makedirs(os.path.dirname(self.dir), exist_ok=True)
@@ -524,9 +511,7 @@ class Scraper(Config):
         self.driver.quit()
         if settings.csv_merge:
             self.current_task.config(text="Writing all comments to CSV...")
-            self.current_task.update()
-            self.dir = f"csv_exports/{settings.csvfilename}"
-            self.dir = check_merged_dir(self.dir)
+            self.dir = check_dir.create_merged_dir(settings)
 
             # write new data
             try:

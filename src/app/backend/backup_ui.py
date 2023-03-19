@@ -1,11 +1,13 @@
 class UI:
+    '''In the data fails to write to CSV, it can still be retrieived 
+    from the terminal via this basic UI.'''
     @staticmethod
     def print_data(comments_list, timestamps_list, datetimes_list):
         while True:
             query = input(
                 """
 Enter 'C', 'T', 'D' for full list of comments, timestamps, and datetimes respectively.
-Press 'L' to view comments individually.
+Press 'L' to view comments and associated data individually.
 Press 'Q' to quit.
 """
             )
