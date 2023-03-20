@@ -15,51 +15,51 @@ class Filters:
         self.current_only_cbutton = False
         self.current_omit_cbutton = False
 
-    def add_or_remove_filter(self, action, *args):  # no need for remove?
-        for arg in args:
-            if arg == "N":
+    def add_or_remove_filter(self, action, *filters):  # no need for remove?
+        for filt in filters:
+            if filt == "N":
                 if action == "add":
                     self.no_filters = True
                 elif action == "remove":
                     self.no_filters = False
-            elif arg == "JE":
+            elif filt == "JE":
                 if action == "add":
                     self.just_emojis = True
                 elif action == "remove":
                     self.just_emojis = False
-            elif arg == "NT":
+            elif filt == "NT":
                 nt = """re.sub("@\S*", "", text)"""
                 if action == "add":
                     self.subtractive_filters.append(nt)
                 elif action == "remove":
                     if nt in self.subtractive_filters:
                         self.subtractive_filters.remove(nt)
-            elif arg == "NR":
+            elif filt == "NR":
                 nr = """re.sub("@.*", "", text)"""
                 if action == "add":
                     self.subtractive_filters.append(nr)
                 elif action == "remove":
                     if nr in self.subtractive_filters:
                         self.subtractive_filters.remove(nr)
-            elif arg == "NS":
+            elif filt == "NS":
                 ns = """re.sub(".*@.*", "", text)"""
                 if action == "add":
                     self.subtractive_filters.append(ns)
                 elif action == "remove":
                     if ns in self.subtractive_filters:
                         self.subtractive_filters.remove(ns)
-            elif arg == "NE":
+            elif filt == "NE":
                 ne = """self.remove_emoji(text)"""
                 if action == "add":
                     self.subtractive_filters.append(ne)
                 elif action == "remove":
                     if ne in self.subtractive_filters:
                         self.subtractive_filters.remove(ne)
-            if not arg == "N":
+            if not filt == "N":
                 if action == "add":
-                    self.filtername += f"{arg}, "
+                    self.filtername += f"{filt}, "
                 elif action == "remove":
-                    self.filtername = self.filtername.replace(f"{arg}, ", "")
+                    self.filtername = self.filtername.replace(f"{filt}, ", "")
 
     def add_or_remove_cfilter(self, action, mode, string):
         words = string.split(",")

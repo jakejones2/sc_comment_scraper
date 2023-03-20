@@ -15,7 +15,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from app.gui.config import Config
 from app.backend.backup_ui import UI
-from app.backend import check_dir
+from app.backend import csv_path
 from app.backend.paths import MyPaths
 
 
@@ -465,7 +465,7 @@ class Scraper(Config):
 
                 # extract title name from url and apply filtername
                 # create relative path to csv_exports folder
-                check_dir.create_ind_dir(url, filters, scrape_datetime, count)
+                csv_path.create_ind_dir(url, filters, scrape_datetime, count)
 
                 # write data
                 try:
@@ -511,7 +511,7 @@ class Scraper(Config):
         self.driver.quit()
         if settings.csv_merge:
             self.current_task.config(text="Writing all comments to CSV...")
-            self.dir = check_dir.create_merged_dir(settings)
+            self.dir = csv_path.create_merged_dir(settings)
 
             # write new data
             try:

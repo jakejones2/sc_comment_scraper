@@ -53,7 +53,7 @@ def create_merged_dir(settings):
     '''This function ensures that the custom filename has a suffix of .csv
     and that any duplicate files are renamed as file(1), file(2) etc.'''
 
-    dir = f"csv_exports/{settings.csvfilename}"
+    dir = f"{MyPaths.csv_path}/{settings.csvfilename}"
     dir = pathlib.PurePath(dir).with_suffix(".csv")
     count = 1
     if not os.path.exists(dir.as_posix()):

@@ -17,3 +17,5 @@ scroll bar was weird with beyonce tracks, 4 urls, 60 per url, no filters and unh
 
 test infinite track retrieval, can we get all urls?
 fix all try except blocks. be specific. (except Exception as e)
+
+catch bad merged filenames (forbidden characters etc.)
