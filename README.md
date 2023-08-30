@@ -13,15 +13,15 @@
 ## Setup
 
 1. Install and set up **virtualenvwrapper**: https://virtualenvwrapper.readthedocs.io/en/latest/
-2. Set up and workon a virtual env and install all project dependencies from `requirements.txt`
+2. Set up and `workon` a virtual env and install all project dependencies from `requirements.txt`
 3. Navigate to `sc_comment_scraper/src`
-4. Run the command `add2virtualenv .` (this adds the package to PYTHONPATH)
+4. Run the command `add2virtualenv .` (this adds the module to PYTHONPATH)
 5. Change dir into `sc_comment_scraper/src/app`
 6. Run `py main.py`
 
 ## Example
 
-1. Run all the steps in the Setup section above
+1. Run all the steps in the Setup section above - the GUI should pop up
 2. Select _manual_ in _URL Input Method_
 3. Enter `https.//soundcloud.com/bonobo/bonobo-and-jacques-greene-fold` in the _URL Entry_ box (or another track URL that you know has comments)
 4. Check _Merge csv files as_ in _Scraping Settings_, and enter a filename (e.g. 'example')

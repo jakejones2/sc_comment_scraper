@@ -136,8 +136,9 @@ class Scraper(Config):
             self.options.add_experimental_option(
                 "prefs", {"profile.managed_default_content_settings.images": 2}
             )
+            self.options.add_argument("--remote-allow-origins=*")
             if settings.headless:
-                self.options.add_argument("--headless")
+                self.options.add_argument("--headless=new")
                 self.options.add_argument("--mute-audio")
 
             # attempts to stop 'webdriver-manager' package from
@@ -149,6 +150,7 @@ class Scraper(Config):
                 service=Service(),
                 options=self.options,
             )
+            self.driver.implicitly_wait(10)
         except:
             messagebox.showerror(
                 "Scraping Error", "Failed to initialise Google Chrome driver"
@@ -468,16 +470,34 @@ class Scraper(Config):
                             quoting=csv.QUOTE_ALL,
                         )
                         self.writer.writerow(["comment", "timestamp", "datetime"])
-                        for counter, comment in enumerate(self.comments_list):
-                            # if counter == settings.max_num: break
+                        if not (
+                            len(self.timestamps_list)
+                            == len(self.datetimes_list)
+                            == len(self.comments_list)
+                        ):
+                            messagebox.showerror(
+                                "Data Error",
+                                f"Missing some timestamp or datetime data for {url} - check source and do not trust CSV for this track",
+                            )
+                        for count, comment in enumerate(self.comments_list):
+                            if count == settings.max_num:
+                                break
+                            timestamp = 0
+                            datetime = 0
+                            try:
+                                timestamp = self.timestamps_list[count]
+                                datetime = self.datetimes_list[count]
+                            except IndexError:
+                                timestamp = 0
+                                datetime = 0
                             self.writer.writerow(
                                 [
                                     comment,
-                                    self.timestamps_list[counter],
-                                    self.datetimes_list[counter],
+                                    timestamp,
+                                    datetime,
                                 ]
                             )
-                except:
+                except Exception as e:
                     messagebox.showerror(
                         "CSV Error", f"Failed to write {url} data to csv"
                     )
@@ -509,15 +529,33 @@ class Scraper(Config):
                         quoting=csv.QUOTE_ALL,
                     )
                     self.writer.writerow(["Comment", "Timestamp", "Datetime Posted"])
+                    if not (
+                        len(self.timestamps_master_list)
+                        == len(self.datetimes_master_list)
+                        == len(self.comments_master_list)
+                    ):
+                        messagebox.showerror(
+                            "Data Error",
+                            f"Missing some timestamp or datetime data. Retry with CSV export set to individual to find the problem URL, and then check the source.",
+                        )
                     for count, comment in enumerate(self.comments_master_list):
+                        timestamp = 0
+                        datetime = 0
+                        try:
+                            timestamp = self.timestamps_master_list[count]
+                            datetime = self.datetimes_master_list[count]
+                        except IndexError:
+                            timestamp = 0
+                            datetime = 0
                         self.writer.writerow(
                             [
                                 comment,
-                                self.timestamps_master_list[count],
-                                self.datetimes_master_list[count],
+                                timestamp,
+                                datetime,
                             ]
                         )
-            except:
+            except Exception as e:
+                print(e)
                 messagebox.showerror("CSV Error", f"Failed to write {url} data to csv")
                 UI.print_data(
                     self.comments_master_list,
