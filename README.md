@@ -1,3 +1,9 @@
+# sc-comment-scraper
+
+First ever coding project - a GUI for scraping and filtering SoundCloud comments. Needs a bit of work but does the job!
+
+Built with Python, Selenium and Tkinter. Has an array of built-in and custom filters which can be stacked. Originally intended for music research, hence the GUI. Would have been more effective as a web app but I learnt a lot about Tkinter in the process...
+
 ## Setup
 
 1. Install and set up **virtualenvwrapper**: https://virtualenvwrapper.readthedocs.io/en/latest/
