@@ -1,4 +1,4 @@
-# sc-comment-scraper
+# SoundCloud Comment Scraper GUI
 
 First ever coding project - a GUI for scraping and filtering SoundCloud comments. Needs a bit of work but does the job!
 
