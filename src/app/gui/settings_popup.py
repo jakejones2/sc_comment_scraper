@@ -30,15 +30,13 @@ class SettingsPopUp(Config):
         # wait time
         self.set_wt_label = ttk.Label(
             self.set_popup,
-            text="Wait time  = ",
+            text="Wait time (s)  = ",
             padding=[pd * 3, pd, 0, pd],
             style="popup.small.TLabel",
         )
         self.set_wt_label.grid(row=0, column=0)
-        self.set_wt = tk.StringVar(value=0.5)
-        self.set_wt_entry = ttk.Entry(
-            self.set_popup, width=5, textvariable=self.set_wt
-        )
+        self.set_wt = tk.StringVar(value=1.0)
+        self.set_wt_entry = ttk.Entry(self.set_popup, width=5, textvariable=self.set_wt)
         self.set_wt_entry.grid(row=0, column=1)
 
         def trace_wait_time(*args, **kwargs):
@@ -49,7 +47,7 @@ class SettingsPopUp(Config):
         # override scroll parameter
         self.set_ovr_label = ttk.Label(
             self.set_popup,
-            text="Scroll parameter  = ",
+            text="Scrolls per scrape = ",
             padding=[pd * 3, pd, 0, pd],
             style="popup.small.TLabel",
         )
@@ -77,9 +75,7 @@ class SettingsPopUp(Config):
             style="popup.TCheckbutton",
             variable=self.set_hdl_var,
         )
-        self.set_hdl_cb.grid(
-            row=2, column=0, columnspan=2, padx=pd * 3, pady=pd
-        )
+        self.set_hdl_cb.grid(row=2, column=0, columnspan=2, padx=pd * 3, pady=pd)
 
         def trace_set_hdl(*args, **kwargs):
             try:

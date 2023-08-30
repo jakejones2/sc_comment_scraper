@@ -4,6 +4,7 @@ from PIL import ImageTk, Image
 import ctypes
 from app.gui.config import Config
 import os
+import platform
 from app.gui.scraping_frame import ScrapingFrame
 from app.gui.da_frame import DAFrame
 from app.backend.url_input import UrlInput
@@ -49,25 +50,24 @@ class MainWindow(Config):
             self.master.geometry("1100x700")
             self.img1 = ImageTk.PhotoImage(Image.open(MyPaths.tab1s_path))
             self.img2 = ImageTk.PhotoImage(Image.open(MyPaths.tab2s_path))
-            self.style.configure(
-                "uhd.TButton",
-                foreground=self.text_colour,
-                background=self.tab_colour,
-                relief=0,
-                font=(self.font_light, "9"),
-            )
-            self.style.map(
-                "uhd.TButton", foreground=[("active", "!disabled", "black")]
-            )
-            self.uhd_button = ttk.Button(
-                self.master,
-                text="Restart in UHD mode",
-                style="uhd.TButton",
-                command=resize_screen,
-            )
-            self.uhd_button.grid(
-                row=0, column=1, padx=pd, pady=pd, sticky="ne"
-            )
+            if platform.system() == "Windows":
+                self.style.configure(
+                    "uhd.TButton",
+                    foreground=self.text_colour,
+                    background=self.tab_colour,
+                    relief=0,
+                    font=(self.font_light, "9"),
+                )
+                self.style.map(
+                    "uhd.TButton", foreground=[("active", "!disabled", "black")]
+                )
+                self.uhd_button = ttk.Button(
+                    self.master,
+                    text="Restart in UHD mode",
+                    style="uhd.TButton",
+                    command=resize_screen,
+                )
+                self.uhd_button.grid(row=0, column=1, padx=pd, pady=pd, sticky="ne")
 
         # title banner
         self.style.configure(
@@ -108,9 +108,7 @@ class MainWindow(Config):
             expand=[("selected", 1), ("hover", 1)],
             foreground=[("hover", "white")],
         )
-        self.nb = ttk.Notebook(
-            self.master, style="TNotebook", padding=[pd, pd, pd, pd]
-        )
+        self.nb = ttk.Notebook(self.master, style="TNotebook", padding=[pd, pd, pd, pd])
         self.nb.grid(row=1, column=0, columnspan=2, sticky="nesw")
 
         # linking to backend

@@ -1,15 +1,3 @@
-## Emergency To do
-
-- the 'tracks' parent url crashes, but playlist works fine
-- check progress bar when retrieving from parent
-- make app replayable, currently crashes on second press of start
-- didn't strip whitespace from urls in manual merge, also crashed
-- add 'files created here' label to finished scroll bar
-- check file browsing button
-- check from artist/playlist functions
-- rename app?
-- scroll bar was weird with beyonce tracks, 4 urls, 60 per url, no filters and unhide chrome browser
-
 ## Setup
 
 1. Install and set up **virtualenvwrapper**: https://virtualenvwrapper.readthedocs.io/en/latest/
@@ -31,6 +19,23 @@
 
 ## Help
 
-This is an old project - my first one! There are plenty of bugs and badly-written bits of code... If you are not getting the results you think you should be, try close the app (ctrl C in the terminal) and start over. Also try searching for the `csv_exports` folder in case this has been created somewhere other than the package root. Otherwise, try adjusting the settings and filters, or choose a new url!
+This is an old project - my first one! There are plenty of bugs and badly-written bits of code so apologies if things don't always run smoothly...
+
+If you get errors, the first thing to check are the **advanced scraping settings**. Try increase the `wait time` to account for a slower network.
+
+If you are still not getting the results you think you should be, try close the app (ctrl C in the terminal) and start over. Also try searching for the `csv_exports` folder in case this has been created somewhere other than the package root. Otherwise, try adjusting the other settings and filters, or choose a new url!
 
 If the writing to CSV fails, the data may still be available via a backup UI in the terminal.
+
+## To Do
+
+- Replace error handling with robust unit testing and targeted try/except blocks (no catch-alls)
+- Review OOP structure throughout: currently lots of large, tightly-coupled classes and functions with poor cohesion.
+- Fix selenium waiting - time.sleep() is not the best way to go about this! Need to use implicit waits etc.
+- Rewrite scraping code to select timestamp, datetime and comment body all at the same time and bind this data in an object. Would prevent the data errors!
+- Filter system's use of eval() is insecure, create more attributes for filter types and execute seperately
+- Complete the data analysis frame
+- add 'files created here' label to finished scroll bar
+- validate GUI interface more - highlight empty inputs, add placeholders etc. Maybe a help button explaining a few things.
+- UHD mode only works on Windows
+- MacOS doesn't seem to automatically find txt files in some cases?

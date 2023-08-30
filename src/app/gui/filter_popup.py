@@ -14,7 +14,7 @@ class FilterPopUp(Config):
         self.icon = ImageTk.PhotoImage(Image.open(MyPaths.icon_path))
         self.filt_popup = Toplevel(self.master)
         self.filt_popup.configure(background=self.background_colour)
-        self.filt_popup.title(" Custom filters")
+        self.filt_popup.title(" Custom filters (comma-delimited list)")
         self.filt_popup.iconphoto(False, self.icon)
 
         #'no comments containing' checkbutton
@@ -28,9 +28,7 @@ class FilterPopUp(Config):
         )
         if filters.current_no_cbutton:
             self.filt_no_cbutton.state(["selected"])
-        self.filt_no_cbutton.grid(
-            row=3, column=0, columnspan=3, padx=pd, sticky="w"
-        )
+        self.filt_no_cbutton.grid(row=3, column=0, columnspan=3, padx=pd, sticky="w")
 
         self.filt_no_entry_var = tk.StringVar()
         self.filt_no_entry = ttk.Entry(
@@ -56,9 +54,7 @@ class FilterPopUp(Config):
         )
         if filters.current_only_cbutton:
             self.filt_only_cbutton.state(["selected"])
-        self.filt_only_cbutton.grid(
-            row=5, column=0, columnspan=3, padx=pd, sticky="w"
-        )
+        self.filt_only_cbutton.grid(row=5, column=0, columnspan=3, padx=pd, sticky="w")
 
         self.filt_only_entry_var = tk.StringVar()
         self.filt_only_entry = ttk.Entry(
@@ -86,9 +82,7 @@ class FilterPopUp(Config):
         )
         if filters.current_omit_cbutton:
             self.filt_omit_cbutton.state(["selected"])
-        self.filt_omit_cbutton.grid(
-            row=7, column=0, columnspan=3, padx=pd, sticky="w"
-        )
+        self.filt_omit_cbutton.grid(row=7, column=0, columnspan=3, padx=pd, sticky="w")
 
         self.filt_omit_entry_var = tk.StringVar()
         self.filt_omit_entry = ttk.Entry(

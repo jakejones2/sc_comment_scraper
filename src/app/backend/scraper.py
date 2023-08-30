@@ -151,7 +151,8 @@ class Scraper(Config):
                 options=self.options,
             )
             self.driver.implicitly_wait(10)
-        except:
+        except Exception as e:
+            print(e)
             messagebox.showerror(
                 "Scraping Error", "Failed to initialise Google Chrome driver"
             )
@@ -169,7 +170,8 @@ class Scraper(Config):
             # scrape parent url
             try:
                 self.driver.get(url_input.parent_url)
-            except:
+            except Exception as e:
+                print(e)
                 messagebox.showerror(
                     "Scraping Error", "Failed to retrieve artist/playlist URL"
                 )
@@ -225,7 +227,8 @@ class Scraper(Config):
                         break
                     else:
                         url_input.url_list.append(element.get_attribute("href"))
-            except:
+            except Exception as e:
+                print(e)
                 messagebox.showerror(
                     "Scraping Error",
                     "Failed to find links on track/playlist URL",
@@ -321,35 +324,37 @@ class Scraper(Config):
                             self.emoji_dict_list = emoji.emoji_list(
                                 self.comments[n].text
                             )
+                            emoji_string = ""
                             for emoji_dict in self.emoji_dict_list:
-                                self.comments_list.append(emoji_dict["emoji"])
-                                self.index_list.append(n)
-                                self.comment_count = n
+                                emoji_string += emoji_dict["emoji"]
+                            self.comments_list.append(emoji_string)
+                            self.index_list.append(n)
+                            self.comment_count = n
                         else:
                             text = self.comments[n].text
                             self.index_list.append(n)
                             self.comment_count = n
                             if filters.subtractive_filters:
-                                for x in filters.subtractive_filters:
+                                for filt in filters.subtractive_filters:
                                     # evaluate the filter, usually reg ex
-                                    text = eval(x).strip()
+                                    text = eval(filt).strip()
                                     # if fails, delete index
                                     if text:
                                         continue
                                     if n in self.index_list:
                                         self.index_list.remove(n)
-                                if filters.additive_filters:
-                                    for x in filters.additive_filters:
-                                        # if search criteria not met
-                                        if eval(x):
-                                            continue
-                                        text = ""
-                                        if n in self.index_list:
-                                            self.index_list.remove(n)
-                                # if passed both add/sub filters
-                                self.comments_list.append(text)
-                                # prevent gui from freezing
-                                self.current_task.update()
+                            if filters.additive_filters:
+                                for filt in filters.additive_filters:
+                                    if eval(filt):
+                                        continue
+                                    # if search criteria not met
+                                    text = ""
+                                    if n in self.index_list:
+                                        self.index_list.remove(n)
+                            # once passed through both add/sub filters (text might be empty string)
+                            self.comments_list.append(text)
+                            # prevent gui from freezing
+                            self.current_task.update()
                     # removing empty strings
                     self.comments_list = [x for x in self.comments_list if x.strip()]
                     # halting if no new comments found in extra scroll
@@ -380,7 +385,8 @@ class Scraper(Config):
                     text=f"url{count}: {url}  |  Retrieving timestamps..."
                 )
                 self.current_task.update()
-            except:
+            except Exception as e:
+                print(e)
                 messagebox.showerror(
                     "Scraping Error", f"Failed to retrieve comments from {url}"
                 )
@@ -395,7 +401,8 @@ class Scraper(Config):
                     if t in self.index_list:
                         self.timestamps_list.append(self.timestamps[t].text)
                         self.timestamps_master_list.append(self.timestamps[t].text)
-            except:
+            except Exception as e:
+                print(e)
                 messagebox.showerror(
                     "Scraping Error",
                     f"Failed to find timestamps in {url} HTML",
@@ -420,7 +427,8 @@ class Scraper(Config):
                         self.datetimes_master_list.append(
                             self.dates[d].get_attribute("datetime")
                         )
-            except:
+            except Exception as e:
+                print(e)
                 messagebox.showerror(
                     "Scraping Error", f"Failed to find datetimes in {url} HTML"
                 )
@@ -445,7 +453,8 @@ class Scraper(Config):
                         self.track = self.track.split("?")[0]
                     self.dir = f"{MyPaths.csv_path}/{scrape_datetime:%Y-%m-%d %H.%M}/{self.artist}, {self.track}"
                     self.dir = check_ind_dir(self.dir, filters)
-                except:
+                except Exception as e:
+                    print(e)
                     messagebox.showwarning(
                         "Filename Error",
                         f"Failed to extract track name from {url}, file numbered instead.",
@@ -482,19 +491,19 @@ class Scraper(Config):
                         for count, comment in enumerate(self.comments_list):
                             if count == settings.max_num:
                                 break
-                            timestamp = 0
-                            datetime = 0
+                            time_stamp = 0
+                            date_time = 0
                             try:
-                                timestamp = self.timestamps_list[count]
-                                datetime = self.datetimes_list[count]
+                                time_stamp = self.timestamps_list[count]
+                                date_time = self.datetimes_list[count]
                             except IndexError:
-                                timestamp = 0
-                                datetime = 0
+                                time_stamp = 0
+                                date_time = 0
                             self.writer.writerow(
                                 [
                                     comment,
-                                    timestamp,
-                                    datetime,
+                                    time_stamp,
+                                    date_time,
                                 ]
                             )
                 except Exception as e:
@@ -539,19 +548,19 @@ class Scraper(Config):
                             f"Missing some timestamp or datetime data. Retry with CSV export set to individual to find the problem URL, and then check the source.",
                         )
                     for count, comment in enumerate(self.comments_master_list):
-                        timestamp = 0
-                        datetime = 0
+                        time_stamp = 0
+                        date_time = 0
                         try:
-                            timestamp = self.timestamps_master_list[count]
-                            datetime = self.datetimes_master_list[count]
+                            time_stamp = self.timestamps_master_list[count]
+                            date_time = self.datetimes_master_list[count]
                         except IndexError:
-                            timestamp = 0
-                            datetime = 0
+                            time_stamp = 0
+                            date_time = 0
                         self.writer.writerow(
                             [
                                 comment,
-                                timestamp,
-                                datetime,
+                                time_stamp,
+                                date_time,
                             ]
                         )
             except Exception as e:
@@ -572,6 +581,7 @@ class Scraper(Config):
         else:
             self.current_task.config(text=f"Completed in {seconds:.2f} seconds")
         self.current_task.update()
+        filters.clear_filters()
 
     def debug(self, settings, url_input, filters):
         # url input
