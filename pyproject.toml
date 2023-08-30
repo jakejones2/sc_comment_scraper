@@ -22,7 +22,6 @@ dependencies = [
   "pandas >= 1.5.3",
   "Pillow >= 9.4.0",
   "selenium >= 4.8.0",
-  "webdriver-manager >= 3.8.5"
 ]
 
 [project.optional-dependencies]

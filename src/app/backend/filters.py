@@ -28,28 +28,28 @@ class Filters:
                 elif action == "remove":
                     self.just_emojis = False
             elif arg == "NT":
-                nt = """re.sub("@\S*", "", text)"""
+                nt = 're.sub("@\S*", "", text)'
                 if action == "add":
                     self.subtractive_filters.append(nt)
                 elif action == "remove":
                     if nt in self.subtractive_filters:
                         self.subtractive_filters.remove(nt)
             elif arg == "NR":
-                nr = """re.sub("@.*", "", text)"""
+                nr = 're.sub("@.*", "", text)'
                 if action == "add":
                     self.subtractive_filters.append(nr)
                 elif action == "remove":
                     if nr in self.subtractive_filters:
                         self.subtractive_filters.remove(nr)
             elif arg == "NS":
-                ns = """re.sub(".*@.*", "", text)"""
+                ns = 're.sub(".*@.*", "", text)'
                 if action == "add":
                     self.subtractive_filters.append(ns)
                 elif action == "remove":
                     if ns in self.subtractive_filters:
                         self.subtractive_filters.remove(ns)
             elif arg == "NE":
-                ne = """self.remove_emoji(text)"""
+                ne = "self.remove_emoji(text)"
                 if action == "add":
                     self.subtractive_filters.append(ne)
                 elif action == "remove":
@@ -67,9 +67,9 @@ class Filters:
         if mode == "exclude":
             for word in words:
                 filt = []
-                filt = f"""re.sub(".*{word}.*", "", text)"""
+                filt = f're.sub(".*{word}.*", "", text)'
                 if self.case_sensitive:
-                    filt = filt.rstrip(")") + """, flags=re.IGNORECASE)"""
+                    filt = filt.rstrip(")") + ", flags=re.IGNORECASE)"
                 if action == "add":
                     self.subtractive_filters.append(filt)
                 elif action == "remove":
@@ -77,9 +77,9 @@ class Filters:
                         self.subtractive_filters.remove(filt)
         if mode == "include":
             for word in words:
-                filt = f"""re.search("{word}", text)"""
+                filt = f're.search("{word}", text)'
                 if self.case_sensitive:
-                    filt = filt.rstrip(")") + """, flags=re.IGNORECASE)"""
+                    filt = filt.rstrip(")") + ", flags=re.IGNORECASE)"
                 if action == "add":
                     self.additive_filters.append(filt)
                 elif action == "remove":
@@ -87,9 +87,9 @@ class Filters:
                         self.additive_filters.remove(filt)
         if mode == "omit":
             for word in words:
-                filt = f"""re.sub("{word}", "", text)"""
+                filt = f're.sub("{word}", "", text)'
                 if self.case_sensitive:
-                    filt = filt.rstrip(")") + """, flags=re.IGNORECASE)"""
+                    filt = filt.rstrip(")") + ", flags=re.IGNORECASE)"
                 if action == "add":
                     self.subtractive_filters.append(filt)
                 elif action == "remove":
