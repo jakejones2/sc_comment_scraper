@@ -33,6 +33,8 @@ If you are still not getting the results you think you should be, try close the 
 
 If the writing to CSV fails, the data may still be available via a backup UI in the terminal.
 
+On macOS at least, screenshots will crash the app...
+
 ## To Do
 
 ### Refactoring
